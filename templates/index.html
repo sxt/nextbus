@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+
+    <title>Narrow Jumbotron Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='jumbotron-narrow.css') }}" rel="stylesheet">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js" ></script>
+    <script language="JavaScript" type="text/javascript">
+      $(document).ready(function(){
+	  // Read query parameters into hash:
+	  var qs = (function(a) {
+	      if (a == "") return {};
+	      var b = {};
+	      for (var i = 0; i < a.length; ++i)
+	      {
+		  var p=a[i].split('=');
+		  if (p.length != 2) continue;
+		  b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+	      }
+	      return b;
+	  })(window.location.search.substr(1).split('&'));      
+
+	  console.log(qs);
+
+	  var a=qs['a'];
+	  var s=qs['s'];
+	  var r=qs['r'];
+	  
+	  var getData = function () {
+	      var url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions";
+	      url = url + "&a="+a+"&s="+s+"&r="+r;
+	      
+	      // Test data from file:
+	      //var url = "http://127.0.0.1:5000/static/tech1.xml";
+	      console.log("URL:"+url);
+
+              $.ajax({
+		  url: url,
+		  dataType: "xml"
+	      })
+		  .success(function(data) {
+		      //$("#content").html(JSON.stringify(data));
+
+		      var predictions = $(data).find('body').find('predictions');
+		      var agencyTitle = predictions.attr('agencyTitle');
+		      var routeTitle = predictions.attr('routeTitle');
+		      var stopTitle = predictions.attr('stopTitle');
+		      // Allow for multiple direction elements - just get first:
+		      var directionEles = predictions.find('direction').slice(0,1);
+		      var direction = directionEles.attr('title');
+
+		      $("#routeTitle").html(routeTitle);
+		      $("#agencyTitle").html(agencyTitle);
+		      $("#routeTitle").html(routeTitle);
+		      $("#stopTitle").html(stopTitle);
+		      $("#direction").html(direction);
+		      
+		      // We only care about the next three predictions:
+		      $predictionEles = $(data).find('direction').find('prediction').slice(0,3);
+		      console.log( $predictionEles.size());		      
+
+		      var i = 0;
+		      var minutesArr = new Array();
+		      
+		      $("#mins1").html("");
+		      $("#mins2").html("");
+		      $("#mins3").html("");
+
+		      $predictionEles.each(function() {
+			  var minutes = $(this).attr('minutes');
+
+			  if (minutes == "0") {
+			      minutes = "Arriving";
+			  }
+
+			  //var timeStampDate = new Date(0);
+			  //timeStampDate.setUTCMilliseconds(epochTime);
+			  //console.log('Time: ' + epochTime + " "  + timeStampDate.toString('M/d/yyyy HH:mm'));
+			  minutesArr.push(minutes);
+			  console.log('Minutes: ' + minutes);
+
+			  i++;
+			  return;
+		      });
+
+		      switch (minutesArr.length) {
+		      case 0:
+			  $("#mins1").html("No Prediction");
+			  break;
+		      case 1:
+			  $("#mins1").html(minutesArr[0] + " min");
+			  break;
+		      case 2:
+			  $("#mins1").html(minutesArr[0] + " min");
+			  $("#mins2").html(minutesArr[1] + " min");
+			  break;
+		      default:
+			  $("#mins1").html(minutesArr[0] + " min");
+			  $("#mins2").html(minutesArr[1] + " min");
+			  $("#mins3").html(minutesArr[2] + " min");
+			  break;
+		      }
+
+		      var nowDate = new Date();
+		      $("#footer").html("As of " + nowDate.toString('M/d/yyyy HH:mm:ss'));
+		      
+ 		      return;
+		      
+		  })
+		  .error(function() {
+		      //$("#error").html("API Call Failed");
+		      console.log("API Call Failed");
+		  });
+	      
+	  };
+
+	  // Get the predictions once:
+	  getData();
+	  // then every n seconds:
+	  setInterval(getData, 30*1000);
+
+      }); // end doc ready
+    </script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header clearfix">
+        <h3 class="text-muted">NextBus Predictor</h3>
+      </div>
+
+      <div class="jumbotron">
+          <h3 id="routeTitle"></h2>
+          <h4 id="direction"></h4>
+	  <p />
+	  <h3 id="stopTitle"></h3>
+      </div>
+      
+      <div class="jumbotron">
+          <h1 id="mins1">3 min</h1>
+          <h3 id="mins2">6 min</h3>
+          <h3 id="mins3">12 min</h3>
+      </div>
+
+      <footer id="footer" class="footer">
+      </footer>
+
+    </div> <!-- /container -->
+
+
+  </body>
+</html>
