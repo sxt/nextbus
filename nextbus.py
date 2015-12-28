@@ -6,9 +6,6 @@ import json
 import os
 
 app = Flask(__name__)
-client_id="4535060a-409f-4d72-93b3-4d34b6b2b406"
-client_secret="aHEcwMa1J7lOFCTRH-cBSKi0Bnk888DHpkj8G-6FBH5PB5OdDTt6uXU5kqeDqlUuS6pKx8Cbjwrw87T0wMal0Q"
-scope='openid+phone+email+address+profile'
 
 @app.route('/index')
 def login():
@@ -27,8 +24,6 @@ def login():
     if stopTag is None:
         stopTag='kendsq_d'
     
-    print "Agency: " + agency 
-
     return render_template('index.html')
 
 if __name__ == '__main__':
