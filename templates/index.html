@@ -88,6 +88,8 @@
 
 			  if (minutes == "0") {
 			      minutes = "Arriving";
+			  } else {
+			      minutes = minutes  + " min"
 			  }
 
 			  //var timeStampDate = new Date(0);
@@ -105,16 +107,16 @@
 			  $("#mins1").html("No Prediction");
 			  break;
 		      case 1:
-			  $("#mins1").html(minutesArr[0] + " min");
+			  $("#mins1").html(minutesArr[0]);
 			  break;
 		      case 2:
-			  $("#mins1").html(minutesArr[0] + " min");
-			  $("#mins2").html(minutesArr[1] + " min");
+			  $("#mins1").html(minutesArr[0]);
+			  $("#mins2").html(minutesArr[1]);
 			  break;
 		      default:
-			  $("#mins1").html(minutesArr[0] + " min");
-			  $("#mins2").html(minutesArr[1] + " min");
-			  $("#mins3").html(minutesArr[2] + " min");
+			  $("#mins1").html(minutesArr[0]);
+			  $("#mins2").html(minutesArr[1]);
+			  $("#mins3").html(minutesArr[2]);
 			  break;
 		      }
 			  
@@ -154,9 +156,9 @@
       </div>
       
       <div class="jumbotron">
-          <h1 id="mins1">3 min</h1>
-          <h3 id="mins2">6 min</h3>
-          <h3 id="mins3">12 min</h3>
+          <h1 id="mins1"></h1>
+          <h3 id="mins2"></h3>
+          <h3 id="mins3"></h3>
       </div>
 
       <footer id="footer" class="footer">
