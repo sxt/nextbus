@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="utf-8">
+<title>MIT Buses - Map</title>
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="/static/js/date.js"></script> 
+
+    <script type="text/javascript">    
+    var gMap;
+//var center_address = "02139";
+var center_address = "100 Vassar Street, Cambridge, MA 02139";
+var currLoc=0;
+// array for markers:
+var m = new Array();
+
+var techIcon = "/static/img/bus-red-16.gif";
+var techStopIcon = "static/img/red-dot.png";
+var mbtaIcon = "static/img/bus-black-16.ico";
+var mbtaStopIcon = "static/img/grey-dot.png";
+// 1 Stops map for now used for all routes. May change this later. 
+// Assumes stop tag is unique across agencies.
+var stopsMap = {};
+var routesMap = {};
+var directionsMap = {};
+
+// for showing prediction times for a stop:
+var infowindow = new google.maps.InfoWindow({
+    content: ""
+});
+
+function placeVehiclesOnMap(vehicles) {
+    // Add  markers to the map
+
+    // Add the new markers
+
+    for (var v in vehicles) {
+	var lat = vehicles[v].attr('lat');
+	var lon = vehicles[v].attr('lon');
+	var route = routesMap[vehicles[v].attr('routeTag')];
+	var direction = directionsMap[vehicles[v].attr('dirTag')];
+	var icon = vehicles[v].attr('icon');
+	var pos = new google.maps.LatLng(lat, lon, false);
+
+	var marker = new google.maps.Marker({
+	    position: pos,
+	    map: gMap,
+	    title:route + " " + direction,
+	    icon:icon
+	});
+	
+	m.push(marker);
+
+    }
+
+}
+
+$(document).ready(function() {
+
+    var loadStops = function(url, stopIcon) {
+	$.ajax({
+	    url: url,
+	    dataType : "xml",
+	    cache : true,
+	    success : function(data) {
+		
+		routesMap[$(data).find('body > route').attr('tag')] = $(data).find('body > route').attr('title');
+
+		var directions = $(data).find('body').find('direction');
+		$.each(directions, function(k, v) {
+		    directionsMap[$(v).attr('tag')] = $(v).attr('title');
+		});
+
+		var stops = $(data).find('body').find('route > stop');
+		$.each(stops, function(k, v) {
+		    stopsMap[$(v).attr('tag')] = $(v);
+		    var marker = new google.maps.Marker({
+			position: new google.maps.LatLng($(v).attr('lat'), $(v).attr('lon'), false),
+			map: gMap,
+			title:$(v).attr('title'),
+			icon:stopIcon
+		    }) ;
+		    marker.addListener('click', function() {
+			// TODO - get predictions for stop
+			infowindow.setContent("<p>A<br>B</p>");
+			infowindow.open(marker.get('map'), marker);
+		    });		    
+		});
+
+	    },
+	    error : function(err) {
+		//alert(err);
+	    }
+	});
+
+    };
+
+    var getVehicleData = function(url, icon) {
+	$.ajax({
+	    url: url,
+	    dataType : "xml",
+	    cache : false,
+	    success : function(data) {
+
+		var vehicles = $(data).find('body').find('vehicle');
+		var vehiclesMap = {}
+
+		$.each(vehicles, function(k, v){
+		    $(v).attr('icon', icon);
+		    var vid = $(v).attr('id');
+		    vehiclesMap[vid] = $(v);
+		});
+		placeVehiclesOnMap(vehiclesMap)
+	    },
+	    error : function(err) {
+		//alert(err);
+	    }
+	});
+    }
+
+    // Get the data
+    var getData = function () {
+
+	// Remove any existing (old) markers from the map.
+	for (var i=0; i < m.length; i++) {
+	    m[i].setMap(null);
+	}
+
+	// MIT Tech Shuttle:
+	getVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mit&r=tech&t=0", techIcon);
+
+	// MBTA CT2:
+	getVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mbta&r=747&t=0", mbtaIcon);
+
+    };
+
+    // Set up the map:
+    var gc = new google.maps.Geocoder();
+    var latlng;
+    gc.geocode({'address': center_address}, function (res1, status) {
+	if (status == google.maps.GeocoderStatus.OK) {
+           latlng = res1[0].geometry.location;
+	}
+
+	var myOptions = {
+            zoom: 15,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	
+	gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	var kmlUrl = "http://web.mit.edu/sturner/www/cta2.kml";
+	var techShuttleLayer = new google.maps.KmlLayer({
+	    url: kmlUrl,
+	    map: gMap
+	});
+
+	// Load tech stops:
+	loadStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mit&r=tech&terse=true", techStopIcon);
+
+	loadStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mbta&r=747&terse=true", mbtaStopIcon);
+
+	// Fill the table once:
+        getData();
+	// and then every n seconds:
+	setInterval(getData, 30*1000);
+
+    });
+
+});
+  </script>
+
+</head>
+<body>
+
+    <div id="map_canvas" style="width: 800px; height: 640px"></div>
+
+</body>
+</html>
