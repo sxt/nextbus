@@ -5,7 +5,7 @@
 <title>MIT Buses - Map</title>
   <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-  <script src="/static/js/date.js"></script> 
+  <script src="js/date.js"></script> 
 
     <script type="text/javascript">    
     var gMap;
@@ -15,10 +15,10 @@ var currLoc=0;
 // array for markers:
 var m = new Array();
 
-var techIcon = "/static/img/bus-red-16.gif";
-var techStopIcon = "static/img/red-dot.png";
-var mbtaIcon = "static/img/bus-black-16.ico";
-var mbtaStopIcon = "static/img/grey-dot.png";
+var techIcon = "img/bus-red-16.gif";
+var techStopIcon = "img/red-dot.png";
+var mbtaIcon = "img/bus-black-16.ico";
+var mbtaStopIcon = "img/grey-dot.png";
 // 1 Stops map for now used for all routes. May change this later. 
 // Assumes stop tag is unique across agencies.
 var stopsMap = {};
@@ -81,7 +81,6 @@ $(document).ready(function() {
 			title:$(v).attr('title'),
 			icon:stopIcon
 		    }) ;
-                    marker['stopId'] = $(v).attr('stopId');
 		    marker.addListener('click', function() {
 			// TODO - get predictions for stop
 			infowindow.setContent("<p>A<br>B</p>");

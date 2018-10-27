@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="utf-8">
+<title>Haverhill Line Trains - Map</title>
+  <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script type="text/javascript"  src="js/cfg/traincfg.js"></script> 
+  <script type="text/javascript"  src="js/train.js"></script> 
+  <script src="js/date.js"></script> 
+
+    <script type="text/javascript">    
+    var gMap;
+//var center_address = "02139";
+var center_address = "100 Vassar Street, Cambridge, MA 02139";
+var m1;
+var currLoc=0;
+// array for markers:
+var m = new Array();
+
+function loadMyMarkers(locations) {
+    // Add  markers to the map
+
+    // Remove any existing (old) markers from the map.
+    for (var i=0; i < m.length; i++) {
+	m[i].setMap(null);
+    }
+
+    // Add the new markers
+    //console.log("Adding marker: " + currLoc);
+
+    var i=0;
+    for (var loc in locations) {
+
+	m[i++] = new google.maps.Marker({
+	    position: locations[loc],
+	    map: gMap,
+	    title:"Train",
+	    icon:"img/train1.png"
+	});
+
+    }
+
+}
+
+$(document).ready(function() {
+
+    // Get the train data
+    var getData = function () {
+
+	$.ajax({
+	    url: "http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLoc
+ations&a=mit&r=tech&t=0",
+	    dataType : "xml",
+	    cache : false,
+	    success : function(data) {
+		var tripMessages = $(data).find('TripMessage');
+
+		var locations = {}
+
+		tripMessages.each(function(){
+		    var tripObj = objectifyTripXml($(this));
+		    if (tripObj.latitude) {
+			locations[tripObj.trip] = 
+			    new google.maps.LatLng(tripObj.latitude,
+						   tripObj.longitude
+						   ,false);
+		    }
+		    
+		});
+		loadMyMarkers(locations)
+	    },
+	    error : function(err) {
+		//alert(err);
+	    }
+	});
+    };
+
+    // Set up the map:
+    var gc = new google.maps.Geocoder();
+    var latlng;
+    gc.geocode({'address': center_address}, function (res1, status) {
+	if (status == google.maps.GeocoderStatus.OK) {
+           latlng = res1[0].geometry.location;
+	}
+
+	var myOptions = {
+            zoom: 15,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	
+	gMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	// Fill the table once:
+        getData();
+	// and then every n seconds:
+	setInterval(getData, 30*1000);
+
+    });
+
+});
+  </script>
+
+</head>
+<body>
+
+    <div id="map_canvas" style="width: 800px; height: 640px"></div>
+
+</body>
+</html>

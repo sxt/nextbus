@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns='http://www.opengis.net/kml/2.2'>
+	<Document>
+		<name>Tech Shuttle</name>
+		<Placemark>
+			<name>Tech Shuttle</name>
+			<description><![CDATA[Thin blue line]]></description>
+			<styleUrl>#line-93D7E8-1</styleUrl>
+			<ExtendedData>
+			</ExtendedData>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>-71.085195,42.362329,0.0 -71.08424,42.362162,0.0 -71.084412,42.361108,0.0 -71.087662,42.360014,0.0 -71.087201,42.359237,0.0 -71.092694,42.357437,0.0 -71.093091,42.358198,0.0 -71.095237,42.357461,0.0 -71.095119,42.357231,0.0 -71.097715,42.356367,0.0 -71.098016,42.356359,0.0 -71.102597,42.354821,0.0 -71.103316,42.355994,0.0 -71.105043,42.355162,0.0 -71.104968,42.354861,0.0 -71.10507,42.354769,0.0 -71.104748,42.354143,0.0 -71.104646,42.353568,0.0 -71.107103,42.353449,0.0 -71.107055,42.354099,0.0 -71.106921,42.354214,0.0 -71.08998,42.362577,0.0 -71.089878,42.362684,0.0 -71.085195,42.362329,0.0</coordinates>
+			</LineString>
+		</Placemark>
+		<Style id='line-93D7E8-1-normal'>
+			<LineStyle>
+				<color>7dF08641</color>
+				<width>2</width>
+			</LineStyle>
+		</Style>
+		<Style id='line-93D7E8-1-highlight'>
+			<LineStyle>
+				<color>7dF08641</color>
+				<width>2.0</width>
+			</LineStyle>
+		</Style>
+		<StyleMap id='line-93D7E8-1'>
+			<Pair>
+				<key>normal</key>
+				<styleUrl>#line-93D7E8-1-normal</styleUrl>
+			</Pair>
+			<Pair>
+				<key>highlight</key>
+				<styleUrl>#line-93D7E8-1-highlight</styleUrl>
+			</Pair>
+		</StyleMap>
+	</Document>
+</kml>

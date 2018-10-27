@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+<!-- Data derived from:
+       Ed Knittel - || tastypopsicle.com
+       Feel free to use this file for your own purposes.
+       Just leave the comments and credits when doing so.
+-->
+  <Document>
+    <name>Bus Route</name>
+    <description>Bus Routes</description>
+    <Style id="line-1">
+      <LineStyle>
+	<color>7dF08641</color>
+	<width>2</width>
+      </LineStyle>
+    </Style>
+    <Style id="line-2">
+      <LineStyle>
+	<color>7d14F0F0</color>
+	<width>2.0</width>
+      </LineStyle>
+    </Style>
+
+    <Placemark>
+      <name>Tech Shuttle</name>
+      <description><![CDATA[Thin blue line]]></description>
+      <styleUrl>#line-1</styleUrl>
+      <LineString>
+	<coordinates>-71.085195,42.362329,0.0 -71.08424,42.362162,0.0 -71.084412,42.361108,0.0 -71.087662,42.360014,0.0 -71.087201,42.359237,0.0 -71.092694,42.357437,0.0 -71.093091,42.358198,0.0 -71.095237,42.357461,0.0 -71.095119,42.357231,0.0 -71.097715,42.356367,0.0 -71.098016,42.356359,0.0 -71.102597,42.354821,0.0 -71.103316,42.355994,0.0 -71.105043,42.355162,0.0 -71.104968,42.354861,0.0 -71.10507,42.354769,0.0 -71.104748,42.354143,0.0 -71.104646,42.353568,0.0 -71.107103,42.353449,0.0 -71.107055,42.354099,0.0 -71.106921,42.354214,0.0 -71.08998,42.362577,0.0 -71.089878,42.362684,0.0 -71.085195,42.362329,0.0</coordinates>
+      </LineString>
+    </Placemark>
+
+    <Placemark>
+      <name>CT2 - Sullivan</name>
+      <description><![CDATA[Thin blue line]]></description>
+      <styleUrl>#line-2</styleUrl>
+      <LineString>
+	<coordinates>
+-71.11096, 42.35012, 0
+-71.110450, 42.353743, 0
+-71.108959, 42.353505, 0
+-71.107103, 42.353449, 0
+-71.107055, 42.354099, 0
+-71.106921, 42.354214, 0
+-71.089980, 42.362577, 0
+-71.089878, 42.362684, 0
+-71.088134, 42.362567, 0
+-71.088123, 42.363051, 0
+-71.087447, 42.363930, 0
+-71.084390, 42.362622, 0
+-71.084862, 42.362361, 0
+-71.088145, 42.362622, 0
+-71.088123, 42.363051, 0
+-71.087351, 42.364002, 0
+-71.089400, 42.364850, 0
+</coordinates>
+      </LineString>
+    </Placemark>
+
+    <Placemark>
+      <name>CT2 - Ruggles</name>
+      <description><![CDATA[Thin blue line]]></description>
+      <styleUrl>#line-2</styleUrl>
+      <LineString>
+	<coordinates>
+-71.089368, 42.364723, 0
+-71.088123, 42.363051, 0
+-71.087447, 42.363930, 0
+-71.084390, 42.362622, 0
+-71.084862, 42.362361, 0
+-71.089990, 42.362749, 0
+-71.090097, 42.362527, 0
+-71.105300, 42.355039, 0
+-71.105070, 42.354769, 0
+-71.104748, 42.354143, 0
+-71.104646, 42.353568, 0
+-71.107103, 42.353449, 0
+-71.108932, 42.353620, 0
+-71.110284, 42.354151, 0
+</coordinates>
+      </LineString>
+    </Placemark>
+
+  </Document>
+</kml>
