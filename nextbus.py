@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import render_template, request, url_for, redirect, make_response
 from flask import session as login_session
-import requests
 import json
 import os
 
@@ -28,7 +27,10 @@ def login():
 
 @app.route('/map')
 def map():
-    return render_template('map.html')
+
+    apikey = request.args.get('apikey')
+
+    return render_template('map.html', apikey=apikey)
 
 if __name__ == '__main__':
     app.secret_key = 'wefw23jr 2R734T'

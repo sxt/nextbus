@@ -123,7 +123,7 @@
 	  };
 
 	  // Set up the map:
-	  L.mapquest.key = 'oTfoHfd7or2pph0LdzYylXgVu5PowRMF';
+	  L.mapquest.key = '{{ apikey }}';
 
 	  L.mapquest.geocoding().geocode(center_address, function (error, response) {
               var location = response.results[0].locations[0];
