@@ -27,7 +27,7 @@
       var routesMap = {};
       var directionsMap = {};
 
-      function placeVehiclesOnMap(vehicles) {
+      function placeVehiclesOnMap(vehicles, icon) {
 	  // Add  markers to the map
 	  
 	  // Add the new markers
@@ -37,14 +37,12 @@
 	      var lon = vehicles[v].attr('lon');
 	      var route = routesMap[vehicles[v].attr('routeTag')];
 	      var direction = directionsMap[vehicles[v].attr('dirTag')];
-	      var icon = vehicles[v].attr('icon');
 	      
-              var marker = L.marker([lat, long], {
+              var marker = L.marker([lat, lon], {
 		  icon: icon,
 		  draggable: false
-              }).bindPopup(route + " " + direction).addTo(map);	  
-	      
-	      m.push(marker);
+              }).bindPopup(route + " " + direction).addTo(map);
+              m.push(marker);
 
 	  }
 
@@ -97,11 +95,10 @@
 		      var vehiclesMap = {}
 
 		      $.each(vehicles, function(k, v){
-			  $(v).attr('icon', icon);
 			  var vid = $(v).attr('id');
 			  vehiclesMap[vid] = $(v);
 		      });
-		      placeVehiclesOnMap(vehiclesMap)
+		      placeVehiclesOnMap(vehiclesMap, icon)
 		  },
 		  error : function(err) {
 		      //alert(err);
@@ -126,7 +123,7 @@
 	  };
 
 	  // Set up the map:
-	  L.mapquest.key = 'key';
+	  L.mapquest.key = 'oTfoHfd7or2pph0LdzYylXgVu5PowRMF';
 
 	  L.mapquest.geocoding().geocode(center_address, function (error, response) {
               var location = response.results[0].locations[0];
@@ -154,7 +151,7 @@
 	  // Fill the table once:
           getData();
 	  // and then every n seconds:
-	      // setInterval(getData, 30*1000);
+	      setInterval(getData, 30*1000);
 
 	  });
 
