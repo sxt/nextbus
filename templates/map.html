@@ -27,7 +27,7 @@
       var routesMap = {};
       var directionsMap = {};
 
-      function placeVehiclesOnMap(vehicles, icon) {
+      function placeNextbusVehiclesOnMap(vehicles, icon) {
 	  // Add  markers to the map
 	  
 	  // Add the new markers
@@ -84,7 +84,7 @@
 	      
 	  };
 
-	  var getVehicleData = function(url, icon) {
+	  var getNextbusVehicleData = function(url, icon) {
 	      $.ajax({
 		  url: url,
 		  dataType : "xml",
@@ -98,7 +98,7 @@
 			  var vid = $(v).attr('id');
 			  vehiclesMap[vid] = $(v);
 		      });
-		      placeVehiclesOnMap(vehiclesMap, icon)
+		      placeNextbusVehiclesOnMap(vehiclesMap, icon)
 		  },
 		  error : function(err) {
 		      //alert(err);
@@ -106,6 +106,35 @@
 	      });
 	  }
 
+	  var getMbtaVehicleData = function(url, icon) {
+	      $.ajax({
+		  url: url,
+		  dataType : "json",
+		  cache : false,
+		  success : function(data) {
+		      var vehicles = data.data;
+		      $.each(vehicles, function(index, vehicle) {
+			  
+			  var lat = vehicle.attributes.latitude;
+			  var lon = vehicle.attributes.longitude;
+
+			  // TO DO get route & direction
+			  
+			  var marker = L.marker([lat, lon], {
+			      icon: icon,
+			      draggable: false
+			  }).bindPopup("TBD: route / direction").addTo(map);
+			  m.push(marker);
+		      });
+		  },
+		  error : function(err) {
+		      alert(err);
+		  }
+	      });
+	      
+
+	  }
+	  
 	  // Get the data
 	  var getData = function () {
 
@@ -115,10 +144,11 @@
 	      }
 
 	      // MIT Tech Shuttle:
-	      getVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mit&r=tech&t=0", techIcon);
+	      getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mit&r=tech&t=0", techIcon);
 
-	      // MBTA CT2 (deprecated):
-	      //getVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mbta&r=747&t=0", mbtaIcon);
+	      // MBTA CT2:
+	      // CT2 route id is 747
+	      getMbtaVehicleData("https://api-v3.mbta.com/vehicles?filter[route]=1", mbtaIcon);
 
 	  };
 
