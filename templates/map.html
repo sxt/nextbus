@@ -118,12 +118,17 @@
 			  var lat = vehicle.attributes.latitude;
 			  var lon = vehicle.attributes.longitude;
 
-			  // TO DO get route & direction
+                          var route_dir = "";
+                          if ( vehicle.attributes.direction_id == 0 ) {
+                            route_dir = "CT2: Sullivan";
+                          } else {
+                            route_dir = "CT2: Ruggles";
+                          }
 			  
 			  var marker = L.marker([lat, lon], {
 			      icon: icon,
 			      draggable: false
-			  }).bindPopup("TBD: route / direction").addTo(map);
+			  }).bindPopup(route_dir).addTo(map);
 			  m.push(marker);
 		      });
 		  },
@@ -148,7 +153,7 @@
 
 	      // MBTA CT2:
 	      // CT2 route id is 747
-	      getMbtaVehicleData("https://api-v3.mbta.com/vehicles?filter[route]=747", mbtaIcon);
+	      getMbtaVehicleData("https://api-v3.mbta.com/vehicles?filter[route]=747&include=route", mbtaIcon);
 
 	  };
 
