@@ -50,7 +50,7 @@
 
       $(document).ready(function() {
 
-	  var loadStops = function(url, stopIcon) {
+	  var loadNextbusStops = function(url, stopIcon) {
 	      $.ajax({
 		  url: url,
 		  dataType : "xml",
@@ -72,7 +72,44 @@
 			      icon: stopIcon,
 			      draggable: false
 			  }).bindPopup($(v).attr('title')).addTo(map);	  
+                          marker['savedTitle'] = $(v).attr('title');
+                          marker.on('click', function(e) {
+                             // TODO: add the next few predictions
+                             this._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />something<br />else')
+                          } );
+                          
+			 // marker['stopId'] = $(v).attr('stopId');
+		      });
+		      
+		  },
+		  error : function(err) {
+		      //alert(err);
+		  }
+	      });
+	      
+	  };
 
+	  var loadMbtaStops = function(url, stopIcon) {
+	      $.ajax({
+		  url: url,
+		  dataType : "json",
+		  cache : true,
+		  success : function(data) {
+	
+		      var stops = data.data;
+		      $.each(stops, function(k, v) {
+			  // stopsMap[$(v).attr('tag')] = $(v);
+
+			  var marker = L.marker([v.attributes.latitude, v.attributes.longitude], {
+			      icon: stopIcon,
+			      draggable: false
+			  }).bindPopup(v.attributes.name).addTo(map);	  
+                          marker['savedTitle'] = v.attributes.name;
+                          marker.on('click', function(e) {
+                             // TODO: add the next few predictions
+                             this._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />something<br />else')
+                          } );
+                          
 			 // marker['stopId'] = $(v).attr('stopId');
 		      });
 		      
@@ -179,9 +216,11 @@
 	  //});
 
 	  // Load tech stops:
-	  loadStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mit&r=tech&terse=true", techStopIcon);
+	  loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mit&r=tech&terse=true", techStopIcon);
+          // TODO replace this with new MBTA API. Nextbus API still seems to work (Dec 2018):
+	  // loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mbta&r=747&terse=true", mbtaStopIcon);
 
-	  loadStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mbta&r=747&terse=true", mbtaStopIcon);
+          loadMbtaStops("https://api-v3.mbta.com/stops?filter[route]=747", mbtaStopIcon);
 
 	  // Fill the table once:
           getData();
