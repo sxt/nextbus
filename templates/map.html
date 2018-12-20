@@ -8,6 +8,8 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="/static/js/date.js"></script> 
 
+    <script type="text/javascript" src="{{ url_for('static', filename='js/nextbus.js') }}"></script>
+
     <script type="text/javascript">    
       var map;
 
@@ -74,11 +76,40 @@
 			  }).bindPopup($(v).attr('title')).addTo(map);	  
                           marker['savedTitle'] = $(v).attr('title');
                           marker.on('click', function(e) {
-                             // TODO: add the next few predictions
-                             this._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />something<br />else')
+                              var stopTag = $(v).attr('tag');
+                	      var url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions";
+                              var s = "w92ames";
+                              url = url + "&a=mit&s="+stopTag+"&r=tech";
+                              var predictionText = "";
+	      
+                              $.ajax({
+                                url: url,
+                                dataType: "xml"
+                              })
+                              .success(function(data) {
+                                 var minutesArr =  extractPredictions (data);
+                                 switch (minutesArr.length) {
+		                 case 0:
+			             predictionText = "No Prediction";
+			             break;
+		                 case 1:
+			             predictionText = predictionText + minutesArr[0];
+			             break;
+		                 case 2:
+			             predictionText = minutesArr[0] + '<br />' + minutesArr[1];
+			             break;
+		                 default:
+			             predictionText = minutesArr[0] + '<br />' + minutesArr[1] + '<br />' + minutesArr[2];
+			             break;
+		                 }
+                                 e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />'+predictionText)
+                              })
+                              .error(function() {
+                                 console.log("API Call Failed");
+                                 e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong><br />' + "No prediction");
+                              });
                           } );
                           
-			 // marker['stopId'] = $(v).attr('stopId');
 		      });
 		      
 		  },
