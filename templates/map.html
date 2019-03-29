@@ -137,8 +137,35 @@
 			  }).bindPopup(v.attributes.name).addTo(map);	  
                           marker['savedTitle'] = v.attributes.name;
                           marker.on('click', function(e) {
-                             // TODO: add the next few predictions
-                             this._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />something<br />else')
+                             url = "https://api-v3.mbta.com/predictions/?filter[route]=747&filter[stop]=" + v.id;
+                              var predictionText = "";
+	      
+                              $.ajax({
+                                url: url,
+                                dataType: "json"
+                              })
+                              .success(function(data) {
+                                 var departuresArr =  extractMbtaPredictions (data);
+                                 switch (departuresArr.length) {
+		                 case 0:
+			             predictionText = "No Prediction";
+			             break;
+		                 case 1:
+			             predictionText = predictionText + departuresArr[0];
+			             break;
+		                 case 2:
+			             predictionText = departuresArr[0] + '<br />' + departuresArr[1];
+			             break;
+		                 default:
+			             predictionText = departuresArr[0] + '<br />' + departuresArr[1] + '<br />' + departuresArr[2];
+			             break;
+		                 }
+                                 e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />'+predictionText)
+                              })
+                              .error(function() {
+                                 console.log("API Call Failed");
+                                 e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong><br />' + "No prediction");
+                              });
                           } );
                           
 			 // marker['stopId'] = $(v).attr('stopId');

@@ -44,3 +44,34 @@ function extractPredictions (data) {
 
     return minutesArr;
 }
+
+function extractMbtaPredictions (data) {
+
+    var predictions = data.data;
+    var arrivalsArr = new Array();
+    var nowMs = new Date();
+
+    $.each(predictions, function(index, prediction) {
+	var arr = prediction.attributes.arrival_time;
+	var arrDate = new Date(arr);
+
+	var etaMs = arrDate.getTime();
+	var etaMins = Math.round((etaMs - nowMs) / (60 * 1000));
+	var minutes = "";
+
+	if (etaMins == 0) {
+	    minutes = "Arriving";
+	} else {
+	    minutes = etaMins.toString()  + " min"
+	}
+
+	arrivalsArr.push(minutes);
+	console.log('Minutes: ' + minutes);
+
+	if (index >= 2) {
+	    return;
+	}
+    });
+
+    return arrivalsArr;
+}
