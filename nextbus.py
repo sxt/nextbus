@@ -28,9 +28,10 @@ def login():
 @app.route('/map')
 def map():
 
-    apikey = request.args.get('apikey')
+    mq_apikey = request.args.get('mq_apikey')
+    mbta_apikey = request.args.get('mbta_apikey')
 
-    return render_template('map.html', apikey=apikey)
+    return render_template('map.html', mq_apikey=mq_apikey, mbta_apikey=mbta_apikey)
 
 if __name__ == '__main__':
     app.secret_key = 'wefw23jr 2R734T'

@@ -29,6 +29,9 @@
       var routesMap = {};
       var directionsMap = {};
 
+      //var mbta_api_headers = { "X-API-KEY": "f64eaa3a82474415a77dfc92c43ae9ec" };
+      var mbta_api_headers = { "X-API-KEY": "{{ mbta_apikey }}" };
+
       function placeNextbusVehiclesOnMap(vehicles, icon) {
 	  // Add  markers to the map
 	  
@@ -105,7 +108,7 @@
                                  e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />'+predictionText)
                               })
                               .error(function() {
-                                 console.log("API Call Failed");
+                                 console.log("Nextbus Prediction API Call Failed");
                                  e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong><br />' + "No prediction");
                               });
                           } );
@@ -114,7 +117,7 @@
 		      
 		  },
 		  error : function(err) {
-		      //alert(err);
+                      console.log("Nextbus Stops API Call Failed");
 		  }
 	      });
 	      
@@ -142,6 +145,7 @@
 	      
                               $.ajax({
                                 url: url,
+                                headers: mbta_api_headers,
                                 dataType: "json"
                               })
                               .success(function(data) {
@@ -163,7 +167,7 @@
                                  e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong>' + '<br />'+predictionText)
                               })
                               .error(function() {
-                                 console.log("API Call Failed");
+                                 console.log("MBTA Prediction API Call Failed");
                                  e.target._popup.setContent('<strong>' + marker['savedTitle'] + '</strong><br />' + "No prediction");
                               });
                           } );
@@ -173,7 +177,7 @@
 		      
 		  },
 		  error : function(err) {
-		      //alert(err);
+                      console.log("MBTA Stops API Call Failed");
 		  }
 	      });
 	      
@@ -196,7 +200,7 @@
 		      placeNextbusVehiclesOnMap(vehiclesMap, icon)
 		  },
 		  error : function(err) {
-		      //alert(err);
+                      console.log("Nextbus Vehicle Data API Call Failed");
 		  }
 	      });
 	  }
@@ -206,6 +210,7 @@
 		  url: url,
 		  dataType : "json",
 		  cache : false,
+                  headers: mbta_api_headers,
 		  success : function(data) {
 		      var vehicles = data.data;
 		      $.each(vehicles, function(index, vehicle) {
@@ -228,7 +233,7 @@
 		      });
 		  },
 		  error : function(err) {
-		      alert(err);
+                      console.log("MBTA Vehicle Data API Call Failed");
 		  }
 	      });
 	      
@@ -253,7 +258,7 @@
 	  };
 
 	  // Set up the map:
-	  L.mapquest.key = '{{ apikey }}';
+	  L.mapquest.key = '{{ mq_apikey }}';
 
 	  L.mapquest.geocoding().geocode(center_address, function (error, response) {
               var location = response.results[0].locations[0];

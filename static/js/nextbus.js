@@ -66,7 +66,7 @@ function extractMbtaPredictions (data) {
 	}
 
 	arrivalsArr.push(minutes);
-	console.log('Minutes: ' + minutes);
+	//console.log('Minutes: ' + minutes);
 
 	if (index >= 2) {
 	    return;
