@@ -50,7 +50,7 @@
 	      
 	      // Test data from file:
 	      //var url = "http://127.0.0.1:5000/static/tech1.xml";
-	      console.log("Nextbus URL:"+url);
+	      //console.log("Nextbus URL:"+url);
 
               $.ajax({
 		  url: url,
@@ -75,8 +75,10 @@
 	  var getMbtaData = function () {
               var url = "https://api-v3.mbta.com/predictions/?filter[route]="+route+"&filter[stop]="+stop+"&include=stop,route,trip";
 	      
-	      console.log("MBTA URL: "+url);
-	      console.log("MBTA API Key: "+mbta_api_headers['X-API-KEY']);
+	      //console.log("MBTA URL: "+url);
+              var routeTitle = '';
+              var stopTitle = '';
+              var direction = '';
 
               $.ajax({
 		  url: url,
@@ -84,6 +86,26 @@
 		  dataType: "json"
 	      })
 		  .success(function(data) {
+
+                      var included = data.included;
+
+                      $.each(included, function(index, include) {
+                  	if (include.type == 'stop') {
+                  	    stopTitle = include.attributes.name;
+                  	} else {
+                  	    if (include.type == 'route') {
+                  		routeTitle = include.attributes.short_name;
+                  	    } else {
+                  		if (include.type == 'trip') {
+                  		    direction = include.attributes.headsign;
+                  		}	
+                  	    }
+                  	}
+                      });
+
+                      $("#routeTitle").html(routeTitle);
+                      $("#stopTitle").html(stopTitle);
+                      $("#direction").html(direction);
 
 		      var minutesArr =  extractMbtaPredictions (data);
 
