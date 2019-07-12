@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 @app.route('/index')
-def login():
+def index():
     print "Index"
 
     agency = request.args.get('a')
@@ -23,7 +23,18 @@ def login():
     if stopTag is None:
         stopTag='kendsq_d'
     
-    return render_template('index.html')
+    return render_template('index.html', a=agency, r=route, s=stopTag)
+
+@app.route('/indexMbta')
+def indexMbta():
+    print "Index MBTA"
+
+    agency = 'mbta'
+    route = request.args.get('r')
+    stopTag = request.args.get('s')
+    mbta_apikey = request.args.get('mbta_apikey')
+
+    return render_template('index.html', a=agency, r=route, s=stopTag, mbta_apikey=mbta_apikey)
 
 @app.route('/map')
 def map():

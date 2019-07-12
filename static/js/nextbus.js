@@ -1,5 +1,5 @@
 /*
-  Common javascript for nextbus
+  Common javascript for nextbus app
 */
 function extractPredictions (data) {
     var predictions = $(data).find('body').find('predictions');
@@ -48,8 +48,32 @@ function extractPredictions (data) {
 function extractMbtaPredictions (data) {
 
     var predictions = data.data;
+    var included = data.included;
+
+    var routeTitle = '';
+    var stopTitle = '';
+    var direction = '';
+
     var arrivalsArr = new Array();
     var nowMs = new Date();
+
+    $.each(included, function(index, include) {
+	if (include.type == 'stop') {
+	    stopTitle = include.attributes.name;
+	} else {
+	    if (include.type == 'route') {
+		routeTitle = include.attributes.short_name;
+	    } else {
+		if (include.type == 'trip') {
+		    direction = include.attributes.headsign;
+		}	
+	    }
+	}
+    });
+
+    $("#routeTitle").html(routeTitle);
+    $("#stopTitle").html(stopTitle);
+    $("#direction").html(direction);
 
     $.each(predictions, function(index, prediction) {
 	var arr = prediction.attributes.arrival_time;

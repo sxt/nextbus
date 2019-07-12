@@ -24,68 +24,44 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 
     <script language="JavaScript" type="text/javascript">
+      var mbta_api_headers = { "X-API-KEY": "{{ mbta_apikey }}" };
+
+      var source = "{{ source }}";
+      var agency = "{{ a }}";
+      var route = "{{ r }}";
+      var stop =  "{{ s }}";
+
       $(document).ready(function(){
       
-	  // Read query parameters into hash:
-	  var qs = (function(a) {
-	      if (a == "") return {};
-	      var b = {};
-	      for (var i = 0; i < a.length; ++i)
-	      {
-		  var p=a[i].split('=');
-		  if (p.length != 2) continue;
-		  b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
-	      }
-	      return b;
-	  })(window.location.search.substr(1).split('&'));      
-
-	  console.log(qs);
-
-	  var a=qs['a'];
-	  var s=qs['s'];
-	  var r=qs['r'];
-	  
 	  var getData = function () {
+             
+           if (agency == 'mit') {
+              getNextbusData();
+           } else {
+              getMbtaData();
+           }
+
+          }
+
+	  var getNextbusData = function () {
+
  	      var url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions";
-	      url = url + "&a="+a+"&s="+s+"&r="+r;
+	      url = url + "&a="+agency+"&s="+stop+"&r="+route;
 	      
 	      // Test data from file:
 	      //var url = "http://127.0.0.1:5000/static/tech1.xml";
-	      console.log("URL:"+url);
+	      console.log("Nextbus URL:"+url);
 
               $.ajax({
 		  url: url,
 		  dataType: "xml"
 	      })
 		  .success(function(data) {
-		      //$("#content").html(JSON.stringify(data));
 
 		      var minutesArr =  extractPredictions (data);
 
-		      $("#mins1").html("");
-		      $("#mins2").html("");
-		      $("#mins3").html("");
+                      formatData(minutesArr);
 
-		      switch (minutesArr.length) {
-		      case 0:
-			  $("#mins1").html("No Prediction");
-			  break;
-		      case 1:
-			  $("#mins1").html(minutesArr[0]);
-			  break;
-		      case 2:
-			  $("#mins1").html(minutesArr[0]);
-			  $("#mins2").html(minutesArr[1]);
-			  break;
-		      default:
-			  $("#mins1").html(minutesArr[0]);
-			  $("#mins2").html(minutesArr[1]);
-			  $("#mins3").html(minutesArr[2]);
-			  break;
-		      }
-			  
-		      $("#footer").html("As of " + moment().format("dddd, MMM Do YYYY, h:mm a"));
-		      
  		      return;
 		      
 		  })
@@ -95,6 +71,62 @@
 		  });
 	      
 	  };
+
+	  var getMbtaData = function () {
+              var url = "https://api-v3.mbta.com/predictions/?filter[route]="+route+"&filter[stop]="+stop+"&include=stop,route,trip";
+	      
+	      console.log("MBTA URL: "+url);
+	      console.log("MBTA API Key: "+mbta_api_headers['X-API-KEY']);
+
+              $.ajax({
+		  url: url,
+                  headers: mbta_api_headers,
+		  dataType: "json"
+	      })
+		  .success(function(data) {
+
+		      var minutesArr =  extractMbtaPredictions (data);
+
+                      formatData(minutesArr);
+
+ 		      return;
+		      
+		  })
+		  .error(function() {
+		      //$("#error").html("API Call Failed");
+		      console.log("API Call Failed");
+		  });
+	      
+	  };
+
+          var formatData = function(minutesArr) {
+	      $("#mins1").html("");
+	      $("#mins2").html("");
+	      $("#mins3").html("");
+
+	      switch (minutesArr.length) {
+	      case 0:
+		  $("#mins1").html("No Prediction");
+		  break;
+	      case 1:
+		  $("#mins1").html(minutesArr[0]);
+		  break;
+	      case 2:
+		  $("#mins1").html(minutesArr[0]);
+		  $("#mins2").html(minutesArr[1]);
+		  break;
+	      default:
+		  $("#mins1").html(minutesArr[0]);
+		  $("#mins2").html(minutesArr[1]);
+		  $("#mins3").html(minutesArr[2]);
+		  break;
+	      }
+			  
+	      $("#footer").html("As of " + moment().format("dddd, MMM Do YYYY, h:mm a"));
+	      
+              return;
+
+          }
 
 	  // Get the predictions once:
 	  getData();
