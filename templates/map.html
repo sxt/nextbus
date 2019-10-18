@@ -55,9 +55,9 @@
 
       $(document).ready(function() {
 
-	  var loadNextbusStops = function(url, stopIcon) {
+	  var loadNextbusStops = function(url, stopIcon, agency, route) {
 	      $.ajax({
-		  url: url,
+		  url: url + "&a=" + agency + "&r=" + route,
 		  dataType : "xml",
 		  cache : true,
 		  success : function(data) {
@@ -81,8 +81,7 @@
                           marker.on('click', function(e) {
                               var stopTag = $(v).attr('tag');
                 	      var url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions";
-                              var s = "w92ames";
-                              url = url + "&a=mit&s="+stopTag+"&r=tech";
+                              url = url + "&a=" + agency + "&s="+stopTag+"&r=" + route;
                               var predictionText = "";
 	      
                               $.ajax({
@@ -90,7 +89,7 @@
                                 dataType: "xml"
                               })
                               .success(function(data) {
-                                 var minutesArr =  extractPredictions (data);
+                                 var minutesArr =  extractNextbusPredictions (data);
                                  switch (minutesArr.length) {
 		                 case 0:
 			             predictionText = "No Prediction";
@@ -183,9 +182,9 @@
 	      
 	  };
 
-	  var getNextbusVehicleData = function(url, icon) {
+	  var getNextbusVehicleData = function(url, icon, agency, route) {
 	      $.ajax({
-		  url: url,
+		  url: url + "&a=" + agency + "&r=" + route,
 		  dataType : "xml",
 		  cache : false,
 		  success : function(data) {
@@ -249,7 +248,7 @@
 	      }
 
 	      // MIT Tech Shuttle:
-	      getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=mit&r=tech&t=0", techIcon);
+	      getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&t=0", techIcon, "mit", "tech");
 
 	      // MBTA CT2:
 	      // CT2 route id is 747
@@ -272,16 +271,8 @@
 		  zoom: 15
 	      });
 
-	  //var kmlUrl = "http://web.mit.edu/sturner/www/cta2.kml";
-	  //var techShuttleLayer = new google.maps.KmlLayer({
-	  //    url: kmlUrl,
-	  //    map: gMap
-	  //});
-
 	  // Load tech stops:
-	  loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mit&r=tech&terse=true", techStopIcon);
-          // TODO replace this with new MBTA API. Nextbus API still seems to work (Dec 2018):
-	  // loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=mbta&r=747&terse=true", mbtaStopIcon);
+          loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&terse=true", techStopIcon, "mit", "tech");
 
           loadMbtaStops("https://api-v3.mbta.com/stops?filter[route]=747", mbtaStopIcon);
 

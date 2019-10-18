@@ -1,7 +1,7 @@
 /*
   Common javascript for nextbus app
 */
-function extractPredictions (data) {
+function extractNextbusPredictions (data) {
     var predictions = $(data).find('body').find('predictions');
     var agencyTitle = predictions.attr('agencyTitle');
     var routeTitle = predictions.attr('routeTitle');
