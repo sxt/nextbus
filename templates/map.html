@@ -21,6 +21,8 @@
 
       var techIcon = L.icon({iconUrl: '/static/img/bus-red-16-large.gif', iconSize: [28, 28]});      
       var techStopIcon = L.icon({iconUrl: "static/img/red-dot-large.png", iconSize: [31, 31]});
+      var ezIcon = L.icon({iconUrl: '/static/img/bus-blue-16-large.gif', iconSize: [28, 28]});      
+      var ezStopIcon = L.icon({iconUrl: "static/img/blue-dot-large.png", iconSize: [31, 31]});
       var mbtaIcon = L.icon({iconUrl: "static/img/bus-black-16-large.png", iconSize: [28, 28]});
       var mbtaStopIcon = L.icon({iconUrl: "static/img/grey-dot-large.png", iconSize: [31, 31]});
       // 1 Stops map for now used for all routes. May change this later. 
@@ -28,6 +30,30 @@
       var stopsMap = {};
       var routesMap = {};
       var directionsMap = {};
+
+      var currentD = new Date();
+      // TEST:
+      //currentD.setHours(20,0,0);
+
+      var ezMorningStart = new Date();
+      ezMorningStart.setHours(6,0,0);
+      var ezMiddayStart = new Date();
+      ezMiddayStart.setHours(10,45,0);
+      var ezEveningStart = new Date();
+      ezEveningStart.setHours(14,55,0);
+      var ezEveningEnd = new Date();
+      ezEveningEnd.setHours(20,0,0);
+
+      var ezRidePhase = "";
+      if (currentD >= ezMorningStart && currentD < ezMiddayStart) {
+         ezRidePhase = "morning";
+      } else if (currentD >= ezMiddayStart && currentD < ezEveningStart) {
+         ezRidePhase = "midday";
+      } else if (currentD >= ezEveningStart && currentD < ezEveningEnd) {
+         ezRidePhase = "evening";
+      } else {
+         ezRidePhase = null;
+      }
 
       //var mbta_api_headers = { "X-API-KEY": "f64eaa3a82474415a77dfc92c43ae9ec" };
       var mbta_api_headers = { "X-API-KEY": "{{ mbta_apikey }}" };
@@ -250,6 +276,10 @@
 	      // MIT Tech Shuttle:
 	      getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&t=0", techIcon, "mit", "tech");
 
+	      // EZRide Shuttle:
+	      if (ezRidePhase) { 
+	         getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&t=0", ezIcon, "charles-river", ezRidePhase);
+              }
 	      // MBTA CT2:
 	      // CT2 route id is 747
 	      getMbtaVehicleData("https://api-v3.mbta.com/vehicles?filter[route]=747&include=route", mbtaIcon);
@@ -273,6 +303,11 @@
 
 	  // Load tech stops:
           loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&terse=true", techStopIcon, "mit", "tech");
+
+	  // Load EZride Evening stops:
+          if (ezRidePhase) { 
+             loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&terse=true", ezStopIcon, "charles-river", ezRidePhase);
+          }
 
           loadMbtaStops("https://api-v3.mbta.com/stops?filter[route]=747", mbtaStopIcon);
 
