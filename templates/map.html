@@ -106,7 +106,7 @@
                           marker['savedTitle'] = $(v).attr('title');
                           marker.on('click', function(e) {
                               var stopTag = $(v).attr('tag');
-                	      var url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictions";
+                	      var url = "https://retro.umoiq.com/service/publicXMLFeed?command=predictions";
                               url = url + "&a=" + agency + "&s="+stopTag+"&r=" + route;
                               var predictionText = "";
 	      
@@ -274,11 +274,11 @@
 	      }
 
 	      // MIT Tech Shuttle:
-	      getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&t=0", techIcon, "mit", "tech");
+	      getNextbusVehicleData("https://retro.umoiq.com/service/publicXMLFeed?command=vehicleLocations&t=0", techIcon, "mit", "tech");
 
 	      // EZRide Shuttle:
 	      if (ezRidePhase) { 
-	         getNextbusVehicleData("http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&t=0", ezIcon, "charles-river", ezRidePhase);
+	         getNextbusVehicleData("https://retro.umoiq.com/service/publicXMLFeed?command=vehicleLocations&t=0", ezIcon, "charles-river", ezRidePhase);
               }
 	      // MBTA CT2:
 	      // CT2 route id is 747
@@ -302,11 +302,11 @@
 	      });
 
 	  // Load tech stops:
-          loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&terse=true", techStopIcon, "mit", "tech");
+          loadNextbusStops("https://retro.umoiq.com/service/publicXMLFeed?command=routeConfig&terse=true", techStopIcon, "mit", "tech");
 
 	  // Load EZride Evening stops:
           if (ezRidePhase) { 
-             loadNextbusStops("http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&terse=true", ezStopIcon, "charles-river", ezRidePhase);
+             loadNextbusStops("https://retro.umoiq.com/service/publicXMLFeed?command=routeConfig&terse=true", ezStopIcon, "charles-river", ezRidePhase);
           }
 
           loadMbtaStops("https://api-v3.mbta.com/stops?filter[route]=747", mbtaStopIcon);
