@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/index')
 def index():
-    print "Index"
+    print ("Index")
 
     agency = request.args.get('a')
     route = request.args.get('r')
@@ -27,7 +27,7 @@ def index():
 
 @app.route('/indexMbta')
 def indexMbta():
-    print "Index MBTA"
+    print ("Index MBTA")
 
     agency = 'mbta'
     route = request.args.get('r')
